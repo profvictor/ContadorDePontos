@@ -1,11 +1,12 @@
 const CACHE_NAME = 'stitch-counter-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/style.css',
-  '/logo.png',
-  '/maquina.gif',
-  '/maquina-parada.png'
+  './',
+  './index.html',
+  './style.css',
+  './logo.png',
+  './maquina.gif',
+  './maquina-parada.png',
+  './sparkles.gif'
 ];
 
 // Instalação do service worker
