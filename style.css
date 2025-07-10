@@ -153,6 +153,23 @@ body {
     transform: translateY(-2px);
 }
 
+.sparkles {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    pointer-events: none;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sparkles.show {
+    opacity: 1;
+}
+
 .controls {
     display: flex;
     justify-content: space-between;
