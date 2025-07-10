@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contador de Pontos - Tricô</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Contador de pontos para tricô e amigurumi">
+    <meta name="theme-color" content="#FBA2D0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Stitch Counter">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- Favicon e ícones -->
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
+    
+    <!-- Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Stitch Counter</h1>
+            <p class="subtitle">Tricô & Amigurumi</p>
+        </div>
+
+        <img src="maquina.gif" alt="Máquina de tricô" class="machine-gif">
+
+        <div class="counter-display">
+            <div class="counter-number" id="counter">0</div>
+            <div class="counter-label">STITCHES</div>
+        </div>
+
+        <button class="main-button" id="addButton">+</button>
+
+        <div class="controls">
+            <button class="back-button" id="backButton">UNDO</button>
+            <button class="reset-button" id="resetButton">RESET</button>
+        </div>
+
+        <div class="footer">
+            Feito para <span class="heart">♥</span> Roberta C.
+        </div>
+    </div>
+
+    <!-- Modal de Reset -->
+    <div class="modal" id="resetModal">
+        <div class="modal-content">
+            <h2 class="modal-title">Resetar Contador</h2>
+            <p class="modal-subtitle">Deslize para confirmar que deseja zerar todos os pontos</p>
+            
+            <div class="slider-container">
+                <div class="slider-track">
+                    <div class="slider-fill" id="sliderFill"></div>
+                    <div class="slider-handle" id="sliderHandle">→</div>
+                    <div class="slider-text">Deslize para resetar</div>
+                </div>
+            </div>
+
+            <div class="modal-buttons">
+                <button class="modal-button cancel-button" id="cancelButton">Cancelar</button>
+                <button class="modal-button confirm-button" id="confirmButton">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let counter = 0;
+        let isSliderActive = false;
+        let sliderPosition = 0;
+
+        const counterDisplay = document.getElementById('counter');
+        const addButton = document.getElementById('addButton');
+        const backButton = document.getElementById('backButton');
+        const resetButton = document.getElementById('resetButton');
+        const resetModal = document.getElementById('resetModal');
+        const cancelButton = document.getElementById('cancelButton');
+        const confirmButton = document.getElementById('confirmButton');
+        const sliderHandle = document.getElementById('sliderHandle');
+        const sliderFill = document.getElementById('sliderFill');
+
+        // Função para atualizar o display do contador
+        function updateCounter() {
+            counterDisplay.textContent = counter;
+        }
+
+        // Adicionar ponto
+        addButton.addEventListener('click', function() {
+            counter++;
+            updateCounter();
+            
+            // Animação do botão
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
+            
+            // Animação de brilho
+            this.classList.add('shine');
+            setTimeout(() => {
+                this.classList.remove('shine');
+            }, 600);
+        });
+
+        // Voltar um ponto
+        backButton.addEventListener('click', function() {
+            if (counter > 0) {
+                counter--;
+                updateCounter();
+            }
+        });
+
+        // Abrir modal de reset
+        resetButton.addEventListener('click', function() {
+            resetModal.style.display = 'block';
+            resetSlider();
+        });
+
+        // Fechar modal
+        cancelButton.addEventListener('click', function() {
+            resetModal.style.display = 'none';
+        });
+
+        // Fechar modal clicando fora
+        resetModal.addEventListener('click', function(e) {
+            if (e.target === resetModal) {
+                resetModal.style.display = 'none';
+            }
+        });
+
+        // Resetar slider
+        function resetSlider() {
+            sliderPosition = 0;
+            sliderHandle.style.left = '0px';
+            sliderFill.style.width = '0%';
+            confirmButton.classList.remove('active');
+            sliderHandle.textContent = '→';
+            sliderHandle.style.opacity = '1';
+        }
+
+        // Slider para reset
+        let isDragging = false;
+        const sliderTrack = document.querySelector('.slider-track');
+        const trackWidth = 340; // Largura aproximada do track menos o handle
+
+        function handleSliderMove(clientX) {
+            const rect = sliderTrack.getBoundingClientRect();
+            const x = clientX - rect.left;
+            const maxX = trackWidth - 60; // Largura do track menos largura do handle
+            
+            sliderPosition = Math.max(0, Math.min(x, maxX));
+            const percentage = (sliderPosition / maxX) * 100;
+            
+            sliderHandle.style.left = sliderPosition + 'px';
+            sliderFill.style.width = percentage + '%';
+            
+            // Ativar botão de confirmar quando slider estiver no final
+            if (percentage >= 95) {
+                confirmButton.classList.add('active');
+                sliderHandle.textContent = '✓';
+                sliderHandle.style.opacity = '0';
+            } else {
+                confirmButton.classList.remove('active');
+                sliderHandle.textContent = '→';
+                sliderHandle.style.opacity = '1';
+            }
+        }
+
+        // Mouse events
+        sliderHandle.addEventListener('mousedown', function(e) {
+            isDragging = true;
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (isDragging) {
+                handleSliderMove(e.clientX);
+            }
+        });
+
+        document.addEventListener('mouseup', function() {
+            isDragging = false;
+        });
+
+        // Touch events para mobile
+        sliderHandle.addEventListener('touchstart', function(e) {
+            isDragging = true;
+            e.preventDefault();
+        });
+
+        document.addEventListener('touchmove', function(e) {
+            if (isDragging) {
+                handleSliderMove(e.touches[0].clientX);
+            }
+        });
+
+        document.addEventListener('touchend', function() {
+            isDragging = false;
+        });
+
+        // Confirmar reset
+        confirmButton.addEventListener('click', function() {
+            if (this.classList.contains('active')) {
+                counter = 0;
+                updateCounter();
+                resetModal.style.display = 'none';
+            }
+        });
+
+        // Atalhos de teclado
+        document.addEventListener('keydown', function(e) {
+            if (resetModal.style.display === 'none') {
+                if (e.code === 'Space' || e.code === 'Enter') {
+                    e.preventDefault();
+                    addButton.click();
+                } else if (e.code === 'Backspace') {
+                    e.preventDefault();
+                    backButton.click();
+                }
+            } else {
+                if (e.code === 'Escape') {
+                    cancelButton.click();
+                }
+            }
+        });
+
+        // Registrar Service Worker para PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registrado com sucesso:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('Falha ao registrar Service Worker:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
