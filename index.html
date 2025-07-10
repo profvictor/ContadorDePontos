@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Contador de Pontos - Tricô</title>
     
     <!-- PWA Meta Tags -->
@@ -89,6 +89,7 @@
         let counter = 0;
         let isSliderActive = false;
         let sliderPosition = 0;
+        let lastTouch = 0; // Adicionado para prevenir double-tap zoom
 
         const counterDisplay = document.getElementById('counter');
         const addButton = document.getElementById('addButton');
@@ -128,6 +129,15 @@
             setTimeout(() => {
                 sparklesContainer.classList.remove('show');
             }, 2000);
+        });
+
+        // Prevenir double-tap zoom no botão de adicionar
+        addButton.addEventListener('touchend', function(e) {
+            const now = Date.now();
+            if (now - lastTouch <= 300) {
+                e.preventDefault();
+            }
+            lastTouch = now;
         });
 
         // Voltar um ponto
