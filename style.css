@@ -153,21 +153,29 @@ body {
     transform: translateY(-2px);
 }
 
-.sparkles {
+/* Container de sparkles */
+.sparkles-container {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 200px;
-    height: 200px;
-    pointer-events: none;
     z-index: 10;
+    pointer-events: none;
     opacity: 0;
     transition: opacity 0.3s ease;
+    width: 200px;
+    height: 200px;
+    margin-top: 150px; /* Posiciona em cima do botão + */
 }
 
-.sparkles.show {
+.sparkles-container.show {
     opacity: 1;
+}
+
+.sparkles-gif {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
 }
 
 .controls {
