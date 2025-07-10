@@ -2,7 +2,7 @@
   "name": "Stitch Counter - Tricô & Amigurumi",
   "short_name": "Stitch Counter",
   "description": "Contador de pontos para tricô e amigurumi",
-  "start_url": "./",
+  "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#FBA2D0",
   "theme_color": "#FBA2D0",
