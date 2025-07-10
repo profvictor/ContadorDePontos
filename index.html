@@ -74,7 +74,7 @@
                 <div class="slider-track">
                     <div class="slider-fill" id="sliderFill"></div>
                     <div class="slider-handle" id="sliderHandle">→</div>
-                    <div class="slider-text">Deslize para resetar</div>
+                    <div class="slider-text">Deslize <span class="hide-on-mobile">para resetar</span></div>
                 </div>
             </div>
 
@@ -179,19 +179,21 @@
         // Slider para reset
         let isDragging = false;
         const sliderTrack = document.querySelector('.slider-track');
-        const trackWidth = 340; // Largura aproximada do track menos o handle
 
         function handleSliderMove(clientX) {
             const rect = sliderTrack.getBoundingClientRect();
+            const handleRect = sliderHandle.getBoundingClientRect();
+            const trackWidth = rect.width;
+            const handleWidth = handleRect.width;
             const x = clientX - rect.left;
-            const maxX = trackWidth - 60; // Largura do track menos largura do handle
-            
+            const maxX = trackWidth - handleWidth;
+
             sliderPosition = Math.max(0, Math.min(x, maxX));
             const percentage = (sliderPosition / maxX) * 100;
-            
+
             sliderHandle.style.left = sliderPosition + 'px';
             sliderFill.style.width = percentage + '%';
-            
+
             // Ativar botão de confirmar quando slider estiver no final
             if (percentage >= 95) {
                 confirmButton.classList.add('active');

@@ -375,6 +375,23 @@ body {
     
 }
 
+@media (max-width: 565px) {
+    .modal-buttons {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .modal-button {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+        padding: 16px 0;
+        font-size: 1.1em;
+    }
+    .hide-on-mobile {
+        display: none;
+    }
+}
+
 @media (max-width: 480px) {
     .container {
         padding: 30px 20px;
