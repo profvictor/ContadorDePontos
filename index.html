@@ -44,6 +44,7 @@
 
         <div class="counter-display">
             <div class="counter-number" id="counter">0</div>
+            <input type="number" id="counterInput" class="counter-input" style="display:none;" min="0" inputmode="numeric" pattern="[0-9]*" />
             <div class="counter-label">STITCHES</div>
         </div>
 
@@ -92,6 +93,7 @@
         let lastTouch = 0; // Adicionado para prevenir double-tap zoom
 
         const counterDisplay = document.getElementById('counter');
+        const counterInput = document.getElementById('counterInput');
         const addButton = document.getElementById('addButton');
         const backButton = document.getElementById('backButton');
         const resetButton = document.getElementById('resetButton');
@@ -106,6 +108,36 @@
         function updateCounter() {
             counterDisplay.textContent = counter;
         }
+
+        // Editar valor do contador ao clicar no número
+        counterDisplay.addEventListener('click', function() {
+            counterInput.value = counter;
+            counterDisplay.style.display = 'none';
+            counterInput.style.display = 'block';
+            counterInput.focus();
+            counterInput.select();
+        });
+
+        // Confirmar alteração ao sair do input ou pressionar Enter
+        function confirmCounterInput() {
+            let value = parseInt(counterInput.value, 10);
+            if (!isNaN(value) && value >= 0) {
+                counter = value;
+                updateCounter();
+            }
+            counterInput.style.display = 'none';
+            counterDisplay.style.display = 'block';
+        }
+
+        counterInput.addEventListener('blur', confirmCounterInput);
+        counterInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                confirmCounterInput();
+            } else if (e.key === 'Escape') {
+                counterInput.style.display = 'none';
+                counterDisplay.style.display = 'block';
+            }
+        });
 
         // Adicionar ponto
         addButton.addEventListener('click', function() {
